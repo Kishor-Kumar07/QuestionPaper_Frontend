@@ -278,6 +278,7 @@ class Parta extends Component {
   render(){
     //console.log(this.state.total)
     const errors=this.validate(this.state.total)
+    console.log('parta')
    
   return (
     <div> 

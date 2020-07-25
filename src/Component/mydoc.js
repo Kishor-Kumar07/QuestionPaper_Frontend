@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import {Row,Col,Input, Label, Button} from 'reactstrap'
 import Math from './math' 
 import Popup from 'reactjs-popup';
@@ -7,81 +8,69 @@ import MathJax from 'react-mathjax2'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import html2pdf from 'html2pdf.js'
+import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
+import _ from 'underscore'
+
 class mydoc extends Component {
      constructor(props)
      {
          super(props);
+         this.state={
+           ids:[],
+           pdf:false,
+           open:true
+         }
+         this.closeModal = this.closeModal.bind(this);
+         
      }
-
-     exportPDFWithComponent() {
-      let element = document.getElementById('pdf')
-      html2canvas(element, {scrollY: -window.scrollY, pagesplit: true}).then(function(canvas) {
-        var imgData = canvas.toDataURL("image/png,1.0");
-        // document.body.append(canvas)
-        // var imgWidth = (canvas.width * 20) / 240;
-        // var imgHeight = (canvas.height * 20) / 240; 
-        // var pdf = new jsPDF('p', 'mm');
-        // pdf.addImage(myImage, 'PNG', 10, 10, imgWidth, imgHeight);
-        // pdf.save("question_paper.pdf");
-        var imgWidth = 210; 
-        var pageHeight = 295;  
-        var imgHeight = canvas.height * imgWidth / canvas.width;
-        var heightLeft = imgHeight;
-        // console.log(canvas.height)
-        // console.log(canvas.width)
-        console.log(imgHeight)
-        console.log(heightLeft)
-        var doc = new jsPDF('p', 'mm','a4');
-        var position = 10;
-  
-        doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-        console.log(heightLeft)
-        while (heightLeft >= 0) {
-          console.log("loop")
-          console.log(heightLeft)
-          position = heightLeft - imgHeight;
-          console.log(position)
-          doc.addPage();
-          doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
-        doc.save( 'file.pdf');﻿
-      });
-      // var opt = {
-      //   margin:       1,
-      //   filename:     'myfile.pdf',
-      //   image:        { type: 'jpeg', quality: 0.98 },
-      //   html2canvas:  { scale: 2 },
-      //   jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-      // };
+    
+     closeModal() {
+      this.setState({ open: false });
+    }
+     onClick = (e) => {
+      e.preventDefault();
+      _.uniq(this.state.ids).forEach(id => {
+        this.data(id)
        
-      // // New Promise-based usage:
-      // html2pdf().from(element).set(opt).save();
-      // const opt = {
-      //   margin:       [0,0],
-      //   filename:     'myfile.pdf',
-      //   image:        { type: 'jpeg', quality: 0.98 },
-      //   html2canvas:  { dpi: 192 },
-      //   jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-      // };
-      // const doc = new jsPDF(opt.jsPDF);
-      // const pageSize = jsPDF.getPageSize(opt.jsPDF);
-      // for(let i = 0; i < element.length; i++){
-      //   const page = element[i];
-      //   const pageImage =  html2pdf().from(page).set(opt).outputImg();
-      //   if(i != 0) {
-      //     doc.addPage();
-      //   }
-      //   doc.addImage(pageImage.src, 'jpeg', opt.margin[0], opt.margin[1], pageSize.width, pageSize.height);
-      // }
-      // doc.save('myfile.pdf')
+      })
+      this.setState({pdf:true,open:true})
+     }
+     data =(id)=>{
+      html2canvas(document.getElementById(id), {scrollY: -window.scrollY}).then(function(canvas) {
+        console.log('canvas'+id)
+         document.getElementById(id).innerHTML = '<img src="' +  canvas.toDataURL("image/png,1.0") + '" style="max-width: 100%;height: auto;"/>';
+       });
+    } 
+    async exportPDFWithComponent(ids) {
+      // console.log(_.uniq(ids))
+     var x=this.pdfExportComponent;
+     console.log(x)
+      
+      console.log('pdf')
+      x.save();
      }
 
     render() {
-        return (
-          
-          <div id="pdf">
+      
+        this.props.sab.qp.map((x,id) => {
+        <div>
+        
+        {this.state.ids.push(1+id)}
+        {this.props.sab.qp[id].subqp.map((xb,subid)=>{
+        {this.state.ids.push(1+id+"."+this.props.csub[subid+1])}
+        
+        
+        })}
+        </div>
+        })
+        let element= <div>
+           <PDFExport
+          ref={component => (this.pdfExportComponent = component)}
+          paperSize="auto"
+          margin={40}
+          fileName={`Report for ${new Date().getFullYear()}`}
+          author="KendoReact Team"
+      >
             <div id="pdf1">
             
             <Row className="form-group">
@@ -129,7 +118,7 @@ class mydoc extends Component {
             
             </Col>
            <Col md={8}>
-            <Label><Math ques={x.question}/></Label>
+            <Label id={1+id}><Math ques={x.question}/></Label>
             
             <img style={{padding:'15px',paddingLeft:'55px',alignItems:'center',justifyContent:'center'}}height="200px" src={x.imagePreviewUrl} />
             </Col>
@@ -144,10 +133,10 @@ class mydoc extends Component {
             <Row>
             <Col md={1} className="offset-md-1">
             <Label>{1+id+"."+this.props.csub[subid+1]+")"}</Label>
-            </Col>
+            </Col>          
             <Col md={8}>
             
-            <Label><Math ques={xb.question}/></Label>
+            <Label id={1+id+"."+this.props.csub[subid+1]}><Math ques={xb.question}/></Label>
             <img style={{padding:'15px',paddingLeft:'55px',alignItems:'center',justifyContent:'center'}}height="200px" src={xb.imagePreviewUrl} />
             </Col>
             <Col md={1}>
@@ -156,7 +145,6 @@ class mydoc extends Component {
             </Row>
             );
             })}
-            
             </div>
             );
             })
@@ -262,8 +250,30 @@ class mydoc extends Component {
             }
             </div>
             
+            </PDFExport>
+        </div>
+        return (
+         
+          <div ref={container => (this.container = container)}>
+            <div>
+         <Row>
+           <Col className="preview">
+            <a style={{textDecoration:'none'}} target='_blank' >
+            <Button className="button col-md-2 offset-md-5" style={{backgroundColor:'violet'}} variant='contained' onClick={this.onClick}>Preview</Button>
+            </a>
+          </Col>
+        </Row>  
+            </div>
+            {console.log(this.state.ids)}
             
-            <Button onClick={this.exportPDFWithComponent} style={{alignItems:'center'}}>Generate PDF</Button>
+            <Button onClick={()=>this.exportPDFWithComponent(this.state.ids)} disabled={!this.state.pdf} style={{alignItems:'center'}}>Generate PDF</Button>
+            
+              <div>
+           
+          {element}
+        
+                </div>
+            
             </div>
         )
     }

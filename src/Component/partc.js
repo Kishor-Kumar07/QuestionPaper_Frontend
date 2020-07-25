@@ -531,15 +531,7 @@ handleBlurSubQp=(field,index,subid)=>(evt)=>{
       )}
       <hr/>  
       {this.handlecheck()}
-       <div>
-         <Row>
-           <Col className="preview">
-            <a style={{textDecoration:'none'}} target='_blank' >
-            <Button className="button col-md-2 offset-md-5" style={{backgroundColor:'violet'}} variant='contained' onClick={this.onClick}>Preview</Button>
-            </a>
-          </Col>
-        </Row>  
-            </div>
+       
                <Mydoc open={this.state.open} closeModal={this.closeModal} idb={this.props.idb} id_a={this.props.id_a} id_b={this.props.id_b} sab={this.props.sab} sb={this.props.sb} csub={this.state.sub} sc={this.state.qp} header={this.props.header} totala={this.props.totala} totalb={this.props.totalb} totalc={this.state.total} />
             </div>
             );
