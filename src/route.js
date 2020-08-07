@@ -5,12 +5,17 @@ import TemplateQP from './Views/templateQP.js'
 import Projects from './Views/projects.js'
 import Contributors from './Views/contributors.js'
 import Contact from './Views/contact.js'
-
+import Preview from './Component/preview.js'
 const Routes = [
     {
       path: "/",
       name: "home",
       component: Home
+    },
+    {
+      path: "/preview",
+      name: "preview",
+      component: Preview
     },
     {
       path: "/searchQP",

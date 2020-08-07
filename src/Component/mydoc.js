@@ -10,6 +10,7 @@ import html2canvas from 'html2canvas'
 import html2pdf from 'html2pdf.js'
 import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
 import _ from 'underscore'
+import {Link} from 'react-router-dom'
 
 class mydoc extends Component {
      constructor(props)
@@ -258,9 +259,13 @@ class mydoc extends Component {
             <div>
          <Row>
            <Col className="preview">
-            <a style={{textDecoration:'none'}} target='_blank' >
-            <Button className="button col-md-2 offset-md-5" style={{backgroundColor:'violet'}} variant='contained' onClick={this.onClick}>Preview</Button>
-            </a>
+           <Button className="button col-md-2 offset-md-5" style={{backgroundColor:'violet'}} variant='contained' onClick={this.onClick}>Save</Button>
+            <Link to= '/preview'
+               >
+           <Button>
+           Preview
+           </Button>
+            </Link>
           </Col>
         </Row>  
             </div>
