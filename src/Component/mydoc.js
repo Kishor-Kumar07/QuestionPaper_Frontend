@@ -261,10 +261,9 @@ class mydoc extends Component {
            <Col className="preview">
            <Button className="button col-md-2 offset-md-5" style={{backgroundColor:'violet'}} variant='contained' onClick={this.onClick}>Save</Button>
             <Link to= '/preview'
+            target="_blank"
                >
-           <Button>
            Preview
-           </Button>
             </Link>
           </Col>
         </Row>  
